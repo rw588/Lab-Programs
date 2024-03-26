@@ -1,0 +1,80 @@
+\documentclass[]{report}
+
+
+% Title Page
+\title{README for Matlab code and Camera operation}
+\author{Robert Waddy}
+
+
+\begin{document}
+\maketitle
+
+\section*{Camera}
+DMK 37BUX226 (16220082)\\
+
+Software from Imaging Source: IC Capture (2.5)\\
+Whilst the camera can be controlled by LabView, MatLab and C++ the camera settings must be changed in IC Capture and then the photo acquired using the other interfaces.\\ 
+
+Settings for reproducible results: Device - Properties...\\
+
+\begin{tabular}{ccc}
+	\hline
+	Brightness & 0 & This is a constant offset \\
+	\hline
+	Gain & 13dB & This is a multiplicative factor to the values \\
+	\hline
+	Exposure & auto & This is how long the frame is captured \\
+	\hline
+	Auto reference & 128 & It actually centres on 138, for unknown reasons \\
+	\hline
+	Auto Max Value & 1/48 & Maximum exposure time \\
+	\hline
+	Sharpness & 0 &  \\
+	\hline
+	Gamma & 1 &  \\
+	\hline
+	Denoise & 0 &  \\
+	\hline
+	Y800 & 4000x3000 & Black and white full resolution \\
+	\hline
+\end{tabular}
+
+\section*{KCube Stepper}
+Serial number: 26004345\\
+The KCube controller from ThorLabs is a .NET controller that is exactly the same as the interface from the .NET controller for LabView for the stepper.
+
+\section*{Newport Stepper}
+TRA12PPD\\
+Software: SMC100 Utility 64-bit\\
+1. Click `discover'\\
+2. COM4\\
+3.  Launch\\
+4. Choose from 2 positions under `Target Motion/ PA-Move Absolute' 
+
+
+\section*{LabView Camera/ Actuator control}
+Basic summary of the LabView `code':\\
+Activate the KCube stepper by passing its serial number to identify it, and then create this device in LabView.\\
+A program is constantly running every 50ms that gets and prints the position readout. Position differs from mm by a factor of 2008645.6.\\
+The loop, sets the stepper to the desired start positions and waits for the response. This will often give back a timeout error (the stepper failed to reach the position in time), wait for the position readout to be static and then click proceed. Alternatively tune the waitTimeout values to prevent this.\\
+The subsequent loop iteratively steps the device and takes a picture with the camera. Watch out there are a few useful loops that remain, but do not contribute to the loop.\\
+Depending on whether the actuator is being used for a tip/ tilt/ rotation or linear stepping the program can readout a linear measurement (factor 3.66667) or angular (atan(0.04301 x)), this value is then saved as the file name in the folder selected.\\
+The step delay adds time to the loop.\\
+The start/ end position/ step are all out of 6mm (the .NET driver thinks the device has a maximum range of 6mm, not 22mm. The true position can be read out under position/mm and is saved as the file name.)\\
+
+\section*{MatLab Programs}
+\subsection*{liveVideo}
+Records live video from the camera straight into MatLab. This often has memory issues (PC is only 8gb), for live video I would recommend using IC Capture, and for livefft I would recommend putting a lens in front of the camera and doing it optically.\\
+\subsection*{ImageFFT2}
+2D FFT with filters
+
+\subsection*{RotationOut}
+Two 1D FFTs and finds the angle. This uses curvature in the FFT to find the peaks. Due to the low frequency noise, a displacement is made of 45 degrees and process repeated to come up with an accurate value for very low angles where the signal is hidden in the low frequency noise.\\
+
+\subsection*{ContrastOut}
+Takes an entire folder and plots their contrast according to file name. Contrast is found using a histrogram. Note the mean pixel value of the data must be 138 (achieved by selecting 128 as the target value in IC Capture).
+
+\subsection*{Tip Tilt Out}
+This splits the image into quarters and takes 16ths from the centre of each quarter and figures takes the contrast with displacement along the optical axis for each of these regions. The delay in the peaks of one section in relation to the others in mm, along with the distance on the sensor between these section allows for the tip/ tilt of the sensor to be calculated.\\
+
+\end{document}          
