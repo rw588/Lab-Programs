@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io.wavfile import write
 from scipy.interpolate import interp1d
+from scipy.signal import iirnotch, lfilter
 
 # Read CSV file
 csv_file = r"/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/IDS/IDS traces/cryostat/openAirMusic.csv"
@@ -11,17 +12,13 @@ with open(csv_file, 'r') as file:
     reader = csv.reader(file)
     data = list(reader)
 
-# Extract frequency
-header = data[0]
-frequency = float(header[1].split(';')[1]) * 1000  # Convert kHz to Hz
-
 # Extract time and displacement data
 time_data = []
 displacement_data = []
 for row in data[6:]:
     try:
         time = float(row[0].split(';')[0])
-        displacement = float(row[1].split(';')[0])
+        displacement = float(row[0].split(';')[1])
         time_data.append(time)
         displacement_data.append(displacement)
     except ValueError:
@@ -48,16 +45,39 @@ audio_signal = np.interp(t, time_interpolated, displacement_interpolated)
 # Normalize audio signal
 audio_signal /= np.max(np.abs(audio_signal))
 
-# Write audio to file
-output_file = "audio_trace.wav"
-write(output_file, sample_rate, audio_signal)
+# Apply notch filter to remove frequencies around 300 Hz
+f0 = 300.0  # Frequency to be removed from the signal (Hz)
+nyquist = 0.5 * sample_rate
+w0 = f0 / nyquist
+Q = 30.0    # Quality factor
+b, a = iirnotch(w0, Q)
+audio_signal_filtered = lfilter(b, a, audio_signal)
 
-# Plot the displacement trace
-plt.plot(time_interpolated, displacement_interpolated)
+# Write filtered audio to file
+output_file = "audio_trace_filtered.wav"
+write(output_file, sample_rate, audio_signal_filtered)
+
+# Plot the filtered audio signal
+plt.figure(figsize=(10, 5))
+plt.plot(t, audio_signal_filtered)
+plt.title('Filtered Audio Signal')
 plt.xlabel('Time (s)')
-plt.ylabel('Displacement (m)')
-plt.title('Displacement vs Time')
+plt.ylabel('Amplitude')
 plt.grid(True)
 plt.show()
 
-print("Audio trace saved as:", output_file)
+# Compute FFT of the filtered audio signal
+n = len(audio_signal_filtered)
+frequencies = np.fft.rfftfreq(n, d=1/sample_rate)
+fft_values = np.abs(np.fft.rfft(audio_signal_filtered))
+
+# Plot FFT of the filtered audio signal
+plt.figure(figsize=(10, 5))
+plt.plot(frequencies, fft_values)
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('Amplitude')
+plt.title('FFT of Filtered Audio Signal')
+plt.grid(True)
+plt.show()
+
+print("Filtered audio trace saved as:", output_file)
