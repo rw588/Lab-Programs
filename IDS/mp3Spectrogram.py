@@ -45,5 +45,6 @@ def plot_spectrogram(filepath, window_size=1, hop_size=1):
     plt.show()
 
 # Replace with the path to your MP3 file
-filepath = "/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/pumpingDown.mp3"
+#filepath = "/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/pumpingDown.mp3"
+filepath = "/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/AccelerometerCronData/2024-05-07_11-50-2.flac"
 plot_spectrogram(filepath)

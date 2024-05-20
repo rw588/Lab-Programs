@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import soundfile as sf
 from datetime import datetime, timedelta
 
+#folder_path = 'Acceleration Data'
+folder_path = '/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/AccelerometerTest005'
+
 def load_flac_file(filepath):
     # Load FLAC file
     data, samplerate = sf.read(filepath)
@@ -31,7 +34,6 @@ def plot_fft(frequencies, amplitudes, offset_minutes, label):
     plt.plot(filtered_freq, filtered_amps + offset_minutes, label=label)
 
 def main():
-    folder_path = 'Acceleration Data'
     file_names = sorted([f for f in os.listdir(folder_path) if f.endswith('.flac')])
 
     base_time = None
@@ -45,7 +47,7 @@ def main():
             base_time = file_datetime
 
         # Calculate offset in minutes from the base time
-        offset_minutes = (file_datetime - base_time).total_seconds() / 3600  # Adjusted to make offsets visible
+        offset_minutes = (file_datetime - base_time).total_seconds() / 360000  # Adjusted to make offsets visible
 
         # Load data
         file_path = os.path.join(folder_path, file_name)

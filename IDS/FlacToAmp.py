@@ -8,7 +8,8 @@ from scipy.signal import detrend
 plt.rcParams.update({'font.size': 16})
 
 # Load the FLAC file
-trace, samplerate = sf.read('/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/pumpingDown.flac')
+#trace, samplerate = sf.read('/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/pumpingDown.flac')
+trace, samplerate = sf.read("/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/AccelerometerCronData/2024-05-07_11-50-27.flac")
 
 data = trace * 10 * 0.564075 #to convert V to ms-2
 
