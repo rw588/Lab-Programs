@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import soundfile as sf
 from datetime import datetime
 
-#file_path = "/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/AccelerometerCronData/2024-05-07_11-50-27.flac"
+file_path = "/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/AccelerometerCronData/2024-05-07_11-50-27.flac"
     
 def load_flac_file(filepath):
     # Load FLAC file

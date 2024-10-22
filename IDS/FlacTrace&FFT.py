@@ -32,26 +32,35 @@ def plot_fft(frequencies, amplitudes, ax, label):
     ax.plot(filtered_freq, filtered_amps, label=label)
     ax.set_xlabel('Frequency (Hz)')
     ax.set_ylabel('Amplitude')
-    ax.set_title('FFT of Audio Signal/ (arb.)')
+    ax.set_title('FFT of vibrational Signal/ (arb.)')
     ax.set_xlim([0, 3000])
     ax.legend()
 
 def plot_waveform(time, acceleration, ax, std_dev, max_val):
-    ax.plot(time, acceleration)
-    ax.set_title(f'10 ms Segment of Audio Waveform\nStandard Deviation: {std_dev:.4f}\nOverall max: {max_val:.4f}')
-    ax.set_xlabel('Time (s)')
-    ax.set_ylabel('Acceleration / (arb.)')
+    #plot waveform as histogram
+    #ax.hist(acceleration, bins=100, histtype='stepfilled', color='b', edgecolor='black')
+    ax.plot(time, acceleration, '+')
+    ax.set_title(f'10 ms vibration data\nStandard Deviation: {std_dev:.4f}\nOverall max: {max_val:.4f}')
+    #for hist
+    ax.set_ylabel('number of samples')
+    ax.set_xlabel('Acceleration / (ms^-2)')
+
+    #for plot
+    ax.set_ylabel('Acceleration / (ms^-2)')
+    ax.set_xlabel('Time / s')
     ax.grid(True)
 
 def main():
     # Specify the file path
-    file_path = 'Data/840mK.wav'
-    #file_path = '/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/AccelerometerCronDataDeNoisedAdv005/2024-05-08_09-30-26.flac'
-    #file_path = 'Data/coldishNoPulseNoTurbo.wav'
+    #file_path = 'Data/840mK.wav'
+    file_path = '/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/Accelerometer/AccelerometerCronDataDeNoisedAdv005/2024-05-08_09-30-26.flac'
+    #file_path = 'Data/data_1.0_300.flac'
+    #file_path = '/media/rob/Data/nextcloud/raidyMcRaiderson/PhD Experimental/Accelerometer/Calibrated/220mK.flac'
     
     # Load data
     trace, samplerate = load_wav_file(file_path)
-    data = trace * 10 * 0.564075  # to convert V to ms-2
+    #data = trace * 0.0005863  # to convert V to ms-2
+    data = trace * 6.25 # to convert V to ms-2
 
     # Compute FFT
     frequencies, amplitudes = compute_fft(data, samplerate)
