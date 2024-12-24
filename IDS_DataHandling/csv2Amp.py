@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 
 #location of csv file
 #file_path = "Data/IDS/840mK.csv"
-file_path = "Data/IDS/coldishNoPulseNoTurbo.csv"
+#file_path = "Data/IDS/coldishNoPulseNoTurbo.csv"
 #file_path = "Data/IDS/pulseTubeOFF.csv"
+file_path = "/Users/robertwaddy/Downloads/75mKpulseOnNoTurbo.csv"
 
 #load csv file extract data from line 9 onwards
 data = np.genfromtxt(file_path, delimiter=';', skip_header=7)

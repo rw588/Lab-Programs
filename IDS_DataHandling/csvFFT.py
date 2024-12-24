@@ -7,6 +7,11 @@ from scipy.signal import detrend
 # Read the CSV file
 filename = '/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/IDS/IDS traces/cryostat/840mK.csv'
 filename = '/Users/robertwaddy/Library/CloudStorage/OneDrive-Personal/PhD Experimental/IDS/IDS traces/cryostat/pulseTubeOFF.csv'
+filename = "/Users/robertwaddy/Downloads/75mKpulseOnNoTurbo.csv"
+
+#samplingFrequency = 50000  # 50 kHz
+samplingFrequency = 1000000  # 100 MHz
+
 data = pd.read_csv(filename, delimiter=';', skiprows=4)
 
 # Convert time to seconds and length from pm to nm
@@ -34,7 +39,7 @@ fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12), gridspec_kw={'height_rati
 ax1.plot(trace_data['Time'], trace_data_detrended)
 ax1.set_xlabel('Time [s]')
 ax1.set_ylabel('Position [nm]')
-ax1.set_title(f'Pulse tube off slowly warming from base. Detrended Position vs. Time (0.01s window)\nStandard Deviation: {std_detrended:.3f} nm. 50kHz sampling')
+ax1.set_title(f'Pulse tube off slowly warming from base. Detrended Position vs. Time (0.01s window)\nStandard Deviation: {std_detrended:.3f} nm. {samplingFrequency/1000:.0f} kHz sampling')
 ax1.grid(True)
 
 # Convert the 'wibblywobbly' column to a NumPy array for FFT
@@ -42,7 +47,7 @@ wibblywobbly_array = data['wibblywobbly'].to_numpy()
 
 # FFT over the whole data set
 N = len(wibblywobbly_array)
-T = 1 / 50000  # 50 kHz sampling frequency
+T = 1 / samplingFrequency
 yf = fft(wibblywobbly_array)
 xf = fftfreq(N, T)[:N // 2]
 
